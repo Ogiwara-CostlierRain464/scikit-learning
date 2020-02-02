@@ -1,11 +1,8 @@
 from sklearn.datasets import load_boston
-import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import LinearRegression, Lasso, ElasticNet, SGDRegressor
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-import matplotlib.pyplot as plt
-import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 boston = load_boston()
 X = boston.data
