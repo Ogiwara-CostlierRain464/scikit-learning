@@ -1,11 +1,8 @@
-from sklearn.datasets import load_boston
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVR, LinearSVC
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
 
 df = pd.read_csv("wine.csv", header=None)
 df.columns = [

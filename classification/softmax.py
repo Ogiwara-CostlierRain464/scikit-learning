@@ -41,5 +41,6 @@ ac_score = accuracy_score(y_test, y_test_pred)
 # print("正解率: {0}".format(ac_score))
 
 plt.figure(figsize=(8, 4))
-plot_decision_regions(X_test_std, y_test, model)
+plot_decision_regions(X_train_std, y_train, model)
+# plot_decision_regions(X_test_std, y_test, model)
 plt.show()
