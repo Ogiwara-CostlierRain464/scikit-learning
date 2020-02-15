@@ -24,6 +24,14 @@ def count(begin, to):
     return range(begin, to+1)
 
 
+def down_to(begin, to):
+    return range(begin, to-1,-1)
+
+
+def swap(a, b):
+    return b, a
+
+
 INF = 99999
 
 

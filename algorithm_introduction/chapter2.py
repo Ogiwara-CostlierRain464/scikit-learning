@@ -1,6 +1,6 @@
 from math import floor
 
-from algorithm_introduction.helper import AlgorithmArray, INF, count
+from algorithm_introduction.helper import AlgorithmArray, INF, count, down_to, swap
 
 
 def insertion_sort(a):
@@ -88,8 +88,18 @@ def marge_sort(A, p, r):
         merge2(A, p, q, r)
 
 
-arr = AlgorithmArray([5, 2, 4, 6, 1, 3, 5, 89, 388])
+def bubble_sort(A):
+    for i in count(1, A.length - 1):
+        print("{0} i:{1} ".format(A, i))
+        for j in down_to(A.length, i + 1):
+            # print("{0} i:{1} j:{2}".format(A, i, j))
+            if A[j] < A[j - 1]:
+                (A[j], A[j - 1]) = swap(A[j], A[j - 1])
 
-marge_sort(arr, 1, arr.length)
+
+arr = AlgorithmArray([5, 2, 4, 1145, 6, 1, 3, 5, 89])
+
+# marge_sort(arr, 1, arr.length)
+bubble_sort(arr)
 
 print(arr)
