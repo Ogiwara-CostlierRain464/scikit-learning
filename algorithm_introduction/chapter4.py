@@ -64,6 +64,7 @@ def linear_search(A):
     m_r = 0
     low_r = 1
     for i in count(1, A.length):
+        print("m: {0}, low_m: {1}, high_m: {2} m_r: {3}, low_r: {4}, i: {5}, A[i]: {6}".format(m, low_m, high_m, m_r, low_r, i, A[i]))
         m_r += A[i]
         if m_r > m:
             low_m = low_r
@@ -115,7 +116,7 @@ def separate_quantum(A: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray, np.n
     return A11, A12, A21, A22
 
 
-arr = AlgorithmArray([13, -3, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7])
+arr = AlgorithmArray([13, -3, -23, -4, 3,18, 20, -7, 12, -5, -22, 15, -4, 7])
 # arr = AlgorithmArray([-5, -9, -78, -4, -3, -3])
 # arr = AlgorithmArray([13, 3, 5, 6, 8, 3])
 
@@ -128,9 +129,9 @@ B = np.array(
      [4, 2]]
 )
 
-print(A.dot(B))
-print(strassen(A, B))
+# print(A.dot(B))
+# print(strassen(A, B))
 
 # print(find_maximum_subarray(arr, 1, arr.length))
 # print(full_search(arr))
-# print(linear_search(arr))
+print(linear_search(arr))
