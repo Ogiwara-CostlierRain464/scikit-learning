@@ -30,10 +30,10 @@ def find_maximum_subarray(A, low, high):
         # 分割
         mid = floor((low + high) / 2)
         # 統治段階
-        (left_low, left_high, left_sum) =\
+        (left_low, left_high, left_sum) = \
             find_maximum_subarray(A, low, mid)
         (right_low, right_high, right_sum) = \
-            find_maximum_subarray(A, mid+1, high)
+            find_maximum_subarray(A, mid + 1, high)
         (cross_low, cross_high, cross_sum) = \
             find_max_crossing_subarray(A, low, mid, high)
         # 結合
@@ -44,3 +44,22 @@ def find_maximum_subarray(A, low, high):
         else:
             return cross_low, cross_high, cross_sum
 
+
+def full_search(A):
+    # compare each collection of (n, m) and find biggest diverge
+    max_diverge = 0
+    for i in down_to(A.length, 2):
+        for j in down_to(i - 1, 1):
+            diverge = A[i] - A[j]
+            if diverge > max_diverge:
+                max_diverge = diverge
+
+    return max_diverge
+
+
+# arr = AlgorithmArray([13, -3, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7])
+# arr = AlgorithmArray([-5, -9, -78, -4, -3, -3])
+arr = AlgorithmArray([13, 3, 5, 6, 8, 3])
+
+# print(find_maximum_subarray(arr, 1, arr.length))
+print(full_search(arr))
