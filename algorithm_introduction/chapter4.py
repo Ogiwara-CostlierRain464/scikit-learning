@@ -77,15 +77,33 @@ def linear_search(A):
 
 
 def strassen(A: np.ndarray, B: np.ndarray):
-    s1 = B[0, 1] - B[1, 1]
-    s2 = A[0, 0] + A[0, 1]
-    s3 = A[1, 0] + A[1, 1]
-    s4 = B[1, 0] - B[0, 0]
-    s5 = A[0, 0] + A[1, 1]
-    s6 = B[0, 0] + B[1, 1]
+    A11, A12, A21, A22 = separate_quantum(A)
+    B11, B12, B21, B22 = separate_quantum(B)
+    S1 = B12 - B22
+    S2 = A11 + A12
+    S3 = A21 + A22
+    S4 = B21 - B11
+    S5 = A11 + A22
+    S6 = B11 + B22
+    S7 = A12 - A22
+    S8 = B21 + B22
+    S9 = A11 - A21
+    S10 = B11 + B12
+    P1 = A11.dot(S1)
+    P2 = S2.dot(B22)
+    P3 = S3.dot(B11)
+    P4 = A22.dot(S4)
+    P5 = S5.dot(S6)
+    P6 = S7.dot(S8)
+    P7 = S9.dot(S10)
+    C11 = P5 + P4 - P2 + P6
+    C12 = P1 + P2
+    C21 = P3 + P4
+    C22 = P5 + P1 - P3 - P7
+    return C11, C12, C21, C22
 
 
-def separate_quantum(A: np.ndarray):
+def separate_quantum(A: np.ndarray) -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray):
     x = A.shape[0]
     y = A.shape[1]
     assert x == y
@@ -101,16 +119,17 @@ arr = AlgorithmArray([13, -3, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7])
 # arr = AlgorithmArray([-5, -9, -78, -4, -3, -3])
 # arr = AlgorithmArray([13, 3, 5, 6, 8, 3])
 
-matrix = np.array(
-    [
-        [1, 2, 3, 4],
-        [5, 6, 7, 8],
-        [9, 10, 11, 12],
-        [13, 14, 15, 16]
-    ]
+A = np.array(
+    [[1, 3],
+     [7, 5]]
+)
+B = np.array(
+    [[6, 8],
+     [4, 2]]
 )
 
-print(separate_quantum(matrix))
+print(A.dot(B))
+print(strassen(A, B))
 
 # print(find_maximum_subarray(arr, 1, arr.length))
 # print(full_search(arr))
