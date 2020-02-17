@@ -1,12 +1,11 @@
 import matplotlib.pyplot as plt
-import numpy as np
+from sklearn import datasets
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-from sklearn import datasets
 
 wine = datasets.load_wine()
-# X = wine.data[:, [9, 12]]
-X = wine.data
+X = wine.data[:, [9, 12]]
+# X = wine.data
 
 sc = StandardScaler()
 X_std = sc.fit_transform(X)
