@@ -58,7 +58,9 @@ y_plt_pred = model.predict(X_plt)
 y_plt_pred2 = model2.predict(X_plt)
 y_plt_pred3 = model3.predict(X_plt)
 
-plt.scatter(X_train_std, y_train, color="blue", label="test data")
+plt.scatter(X_train_std, y_train, color="blue", label="train data")
+plt.scatter(X_test_std, y_test, color="yellow", label="test data")
+
 
 plt.plot(X_plt, y_plt_pred, color="lime", linestyle="-", label="LinearRegression")
 plt.plot(X_plt, y_plt_pred2, color="red", linestyle="-", label="SVR")

@@ -21,17 +21,21 @@ class AlgorithmArray:
 
 
 def count(begin, to):
-    return range(begin, to+1)
+    return range(begin, to + 1)
 
 
 def down_to(begin, to):
-    return range(begin, to-1,-1)
+    return range(begin, to - 1, -1)
 
 
 def swap(a, b):
     return b, a
 
 
+def swap_arr(arr, index1, index2):
+    tmp = arr[index1]
+    arr[index1] = arr[index2]
+    arr[index2] = tmp
+
+
 INF = 99999
-
-
