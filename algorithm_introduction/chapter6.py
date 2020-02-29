@@ -36,7 +36,9 @@ def max_heapify(A, i):
 
 
 def build_max_heap(A):
-    pass
+    A.heap_size = A.length
+    for i in down_to(floor(A.length/2), 1):
+        max_heapify(A, i)
 
 
 def min_heapify(A, i):
@@ -53,8 +55,8 @@ def min_heapify(A, i):
         min_heapify(A, smallest)
 
 
-arr = HeapArray([1, 9, 3, 4, 5, 6, 7, 8, 2])
+arr = HeapArray([4, 1, 3, 2, 16, 9, 10, 14, 8, 7])
 
-min_heapify(arr, 2)
+build_max_heap(arr)
 
 print(arr)
