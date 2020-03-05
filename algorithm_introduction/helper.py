@@ -1,3 +1,6 @@
+import random
+
+
 class AlgorithmArray:
     def __init__(self, body):
         self._body = body
@@ -36,6 +39,10 @@ def swap_arr(arr, index1, index2):
     tmp = arr[index1]
     arr[index1] = arr[index2]
     arr[index2] = tmp
+
+
+def int_random(from_, to):
+    return random.randrange(from_, to + 1)
 
 
 INF = 99999
