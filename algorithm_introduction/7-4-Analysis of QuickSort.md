@@ -1,12 +1,6 @@
 # About
 乱択版クイックソートアルゴリズムにおいて、期待実行時間が
-<img src="https://latex.codecogs.com/gif.latex?\Theta&space;(n&space;\lg&space;n&space;)" title="\Theta (n \lg n )" />
-
-であることを示す。
-
-何を書くべき？
-
-最良の分割、均等分割を見た後に平均時評価がそれらとあまり変わらないこと直感的に見る
+<img src="https://latex.codecogs.com/gif.latex?\Theta&space;(n&space;\lg&space;n&space;)" title="\Theta (n \lg n )" />であることを示す。
 
 クイックソートの実行時間は分割が均等か否かに依存し、したがって分割の際にピボットとなる要素
 に依存する。分割が均等ならばクイックソートは漸近的にマージソートと同程度に高速だが、
