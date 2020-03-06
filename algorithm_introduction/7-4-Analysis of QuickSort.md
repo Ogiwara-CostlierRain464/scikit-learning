@@ -74,7 +74,38 @@
 
 # 期待実行時間の解析
 
-QUICK_SORTとRANDOMIZED_QUICK_SORTの相違はピボット要素の選択方法だけにあり、残りは完全に同じである。そこで、ピボット要素が
-RANDOMIZED_QUICK_SORTに渡される部分配列から無作為に抽出されるという仮定の元で、QUICK_SORTとPARTITION手続きを議論することで、RANDOMIZED_QUICK_SORTを解析する。
+QUICK_SORTとRANDOMIZED_QUICK_SORTの相違はピボット要素の選択方法だけにあり、残りは完全に同じである。
+なので、ピボット要素がRANDOMIZED_QUICK_SORTに渡される部分配列から無作為に
+抽出されるという仮定の元で、QUICK_SORTとPARTITION手続きを解析することで、
+RANDOMIZED_QUICK_SORTを解析する。
 
-Work in Progress..
+QUICK_SORTの実行時間は内部で呼び出しているPARTITION、およびQUICK_SORTの再帰呼び出しによって決まる。
+
+- PARTITIONは3行目のfor文の繰り返し回数によって実行時間が決まり、これは4行目を見るようにピボット要素と他の要素の比較回数と一致する。
+- QUICK_SORTの呼び出しは高々<img src="https://latex.codecogs.com/gif.latex?O(n)" title="O(n)" /> である。
+
+これより、ピボットと他の要素との比較回数をXとすると、QUICK_SORTの実行時間はO(n+X)である。
+
+したがって、ここではXを計算することによって解を得られる。
+
+ここで、
+配列の各要素をz_1, z_2,…z_n、
+
+Z_ij = { z_i, z_i+1,…z_j }、
+
+X_ij = I{z_iとz_jが比較される}
+
+と定義し、ピボットと他の要素を比較するときの性質について詳しく見ていく。
+
+1. PARTITIONのある呼び出しが終了した後、その呼び出しで用いられたピボット要素は他の要素と二度と比較されることはない。
+2. 部分配列Z_ijでのPARTITIONでのピボット選択時に、
+- z_i < x < z_j を満たすピボットxを選択すると、それ以降にz_i, z_jを比較することはない。
+- z_iをピボットとして選択すると、z_iをそれ以外のZ_ijの全要素と比較する。
+- z_jをピボットとして選択すると、z_jをそれ以外のZ_ijの全要素と比較する。
+
+これらの性質を元にして、Xを計算していく。
+性質1により、Xは
+
+![](res/7-4.png)
+
+となる。
