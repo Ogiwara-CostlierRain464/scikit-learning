@@ -1,22 +1,41 @@
 import random
+from typing import TypeVar, Generic
 
 
-class AlgorithmArray:
+class KeyAndItem:
+    def __init__(self, key, item):
+        self.key = key
+        self.item = item
+
+    def __str__(self):
+        return "({0}: {1})".format(self.key, self.item)
+
+    def __repr__(self):
+        return self.__str__()
+
+
+T = TypeVar('T', int, KeyAndItem)
+
+
+class AlgorithmArray(Generic[T]):
     def __init__(self, body):
-        self._body = body
+        self.body = body
 
-    def __getitem__(self, item):
-        return self._body[item - 1]
+    def __getitem__(self, item) -> T:
+        return self.body[item - 1]
 
-    def __setitem__(self, key, value):
-        self._body[key - 1] = value
+    def __setitem__(self, key, value: T):
+        self.body[key - 1] = value
 
     @property
     def length(self):
-        return len(self._body)
+        return len(self.body)
 
     def __str__(self):
-        return str(self._body)
+        return str(self.body)
+
+    def __repr__(self):
+        return self.__str__()
 
     @staticmethod
     def empty(size):

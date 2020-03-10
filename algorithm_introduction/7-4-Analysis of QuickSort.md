@@ -79,10 +79,10 @@ QUICK_SORTとRANDOMIZED_QUICK_SORTの相違はピボット要素の選択方法�
 抽出されるという仮定の元で、QUICK_SORTとPARTITION手続きを解析することで、
 RANDOMIZED_QUICK_SORTを解析する。
 
-QUICK_SORTの実行時間は内部で呼び出しているPARTITION、およびQUICK_SORTの再帰呼び出しによって決まる。
+QUICK_SORTの実行時間は内部で呼び出しているPARTITIONによって決まる。
 
 - PARTITIONは3行目のfor文の繰り返し回数によって実行時間が決まり、これは4行目を見るようにピボット要素と他の要素の比較回数と一致する。
-- QUICK_SORTの呼び出しは高々<img src="https://latex.codecogs.com/gif.latex?O(n)" title="O(n)" /> である。
+- PARTITONの呼び出しは高々<img src="https://latex.codecogs.com/gif.latex?O(n)" title="O(n)" /> である。
 
 これより、ピボットと他の要素との比較回数をXとすると、QUICK_SORTの実行時間はO(n+X)である。
 
