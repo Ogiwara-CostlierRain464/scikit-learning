@@ -65,6 +65,17 @@ def make_int_arr(A: AlgorithmArray[KeyAndItem]) -> AlgorithmArray[int]:
     return AlgorithmArray(tmp)
 
 
+def bucket_sort(A):
+    n = A.length
+    # Bはindexが0から始まることに注意
+    B = [0] * n
+    for i in count(0, n - 1):
+        B[i] = [0] * 5
+    for i in count(1, n):
+        B[floor(n * A[i])] = A[i]
+    for i in count(0, n - 1):
+        pass
+
+
 arr = AlgorithmArray([329, 457, 657, 839, 436, 720, 355])
 print(radix_sort(arr, 3))
-# print(make_digit_key_arr(arr, 2))
