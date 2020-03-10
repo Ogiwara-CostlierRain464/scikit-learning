@@ -22,7 +22,7 @@ class LinkedList:
         return "L.head -> {0} ".format(self.head)
 
     def __repr__(self):
-        self.__str__()
+        return self.__str__()
 
 
 def list_search(L: LinkedList, k):

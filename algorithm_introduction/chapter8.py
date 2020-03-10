@@ -1,4 +1,5 @@
 from algorithm_introduction.helper import *
+from algorithm_introduction.chapter10 import *
 from math import *
 
 
@@ -70,12 +71,12 @@ def bucket_sort(A):
     # Bはindexが0から始まることに注意
     B = [0] * n
     for i in count(0, n - 1):
-        B[i] = [0] * 5
+        B[i] = LinkedList(None)
     for i in count(1, n):
-        B[floor(n * A[i])] = A[i]
-    for i in count(0, n - 1):
-        pass
+        list_insert(B[floor(n * A[i])] , LinkedListElement(None, A[i], None))
+    # WIP
+    print(B)
 
 
-arr = AlgorithmArray([329, 457, 657, 839, 436, 720, 355])
-print(radix_sort(arr, 3))
+arr = AlgorithmArray([.78, .17, .39, .26, .72, .94, .21, .12, .23, .68])
+bucket_sort(arr)
