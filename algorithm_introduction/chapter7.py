@@ -34,6 +34,7 @@ def randomized_partition(A, p, r):
     return partition(A, p, r)
 
 
-arr = AlgorithmArray([2, 8, 7, 1, 3, 5, 6, 4])
-quick_sort(arr, 1, 8)
-print(arr)
+if __name__ == "__main__":
+    arr = AlgorithmArray([2, 8, 7, 1, 3, 5, 6, 4])
+    quick_sort(arr, 1, 8)
+    print(arr)
