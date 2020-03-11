@@ -1,4 +1,32 @@
-from algorithm_introduction.helper import count
+from algorithm_introduction.helper import *
+
+
+class Queue(AlgorithmArray):
+    def __init__(self, size: int):
+        super().__init__([0] * size)
+        self.head = 1
+        self.tail = 1
+
+
+def enqueue(Q: Queue, x):
+    if Q.head == Q.tail + 1 or (Q.head == 1 and Q.tail == Q.length):
+        raise ValueError("Overflow")
+    Q[Q.tail] = x
+    if Q.tail == Q.length:
+        Q.tail = 1
+    else:
+        Q.tail = Q.tail + 1
+
+
+def dequeue(Q: Queue):
+    if Q.tail == Q.head:
+        raise ValueError("Underflow")
+    x = Q[Q.head]
+    if Q.head == Q.length:
+        Q.head = 1
+    else:
+        Q.head = Q.head + 1
+    return x
 
 
 class LinkedListElement:
@@ -50,8 +78,5 @@ def list_delete(L, x):
 
 
 if __name__ == '__main__':
-    l = LinkedList(None)
-    for i in count(1, 10):
-        list_insert(l, LinkedListElement(None, i, None))
+    pass
 
-    print(l)
