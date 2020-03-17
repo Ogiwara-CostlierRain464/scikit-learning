@@ -1,8 +1,10 @@
+from typing import Union, Optional
+
 from algorithm_introduction.helper import *
 
 
 class Node:
-    def __init__(self, key, left, right, p):
+    def __init__(self, key, left=None, right=None, p=None):
         self.key = key
         self.left = left
         self.right = right
@@ -15,6 +17,11 @@ class Node:
         return self.__str__()
 
 
+class Tree:
+    def __init__(self, root: Node):
+        self.root = root
+
+
 def in_order_tree_walk(x: Node):
     if x is not None:
         in_order_tree_walk(x.left)
@@ -22,7 +29,7 @@ def in_order_tree_walk(x: Node):
         in_order_tree_walk(x.right)
 
 
-def tree_search(x: Node, k):
+def tree_search(x: Node, k) -> Optional[Node]:
     if (x is None) or (k == x.key):
         return x
     if k < x.key:
@@ -77,6 +84,39 @@ def tree_predecessor(x: Node):
     return y
 
 
+def tree_insert(T: Tree, z: Node):
+    y = None
+    x = T.root
+    while x is not None:
+        y = x
+        if z.key < x.key:
+            x = x.left
+        else:
+            x = x.right
+    z.p = y
+    if y is None:
+        T.root = z
+    elif z.key < y.key:
+        y.left = z
+    else:
+        y.right = z
+
+
+def tree_insert_rec(x: Node, z: Node):
+    if z.key > x.key:
+        if x.right is None:
+            x.right = z
+            x.right.p = x
+        else:
+            tree_insert_rec(x.right, z)
+    else:
+        if x.left is None:
+            x.left = z
+            x.left.p = x
+        else:
+            tree_insert_rec(x.left, z)
+
+
 def sample() -> Node:
     two = Node(2, None, None, None)
     four = Node(4, None, None, None)
@@ -109,4 +149,12 @@ def sample() -> Node:
 if __name__ == "__main__":
     root = sample()
 
-    print(tree_predecessor(tree_search(root, 18)))
+    t = Tree(root)
+    # in_order_tree_walk(t.root)
+    tree_insert_rec(root, Node(19))
+    in_order_tree_walk(t.root)
+    _19 = tree_search(root, 19)
+    print(_19.p)
+    print(_19.left)
+    print(_19.right)
+
