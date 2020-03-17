@@ -1,6 +1,5 @@
 from algorithm_introduction.helper import *
 
-
 #  単一配列表現を用いて、Allocate objectとFree objectを表現
 A = AlgorithmArray([
     None, None, None,
