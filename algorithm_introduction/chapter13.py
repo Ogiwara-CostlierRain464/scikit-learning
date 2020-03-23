@@ -34,7 +34,7 @@ TreeNIL = RBNode(key=INF, color=Color.BLACK)
 
 
 def make_node(key, color: Color = Color.BLACK):
-    return RBNode(key=key, color=color, left=TreeNIL, right=TreeNIL, p=None)
+    return RBNode(key=key, color=color, left=TreeNIL, right=TreeNIL, p=TreeNIL)
 
 
 RBNode.apply = make_node
@@ -88,6 +88,7 @@ def tree_predecessor(x: RBNode):
     return y
 
 
+# x.right != TreeNIL, T.root.p == TreeNILを仮定
 def left_rotate(T: RBTree, x: RBNode):
     y = x.right         # yをxの右の子とする
     x.right = y.left    # yの左部分木をxの右部分木にする
@@ -104,6 +105,7 @@ def left_rotate(T: RBTree, x: RBNode):
     x.p = y
 
 
+# x.left != TreeNIL, T.root.p == TreeNILを仮定
 def right_rotate(T: RBTree, x: RBNode):
     y = x.left
     x.left = y.right
@@ -120,6 +122,60 @@ def right_rotate(T: RBTree, x: RBNode):
     x.p = y
 
 
+def rb_insert_fixup(T: RBTree, z: RBNode):
+    while z.p.color == Color.RED:
+        if z.p == z.p.p.left:
+            y = z.p.p.right
+            if y.color == Color.RED:
+                z.p.color = Color.BLACK
+                y.color = Color.BLACK
+                z.p.p.color = Color.RED
+                z = z.p.p
+            elif z == z.p.right:
+                z = z.p
+                left_rotate(T, z)
+            z.p.color = Color.BLACK
+            z.p.p.color = Color.RED
+            right_rotate(T, z.p.p)
+        else:
+            y = z.p.p.left
+            if y.color == Color.RED:
+                z.p.color = Color.BLACK
+                y.color = Color.BLACK
+                z.p.p.color = Color.RED
+                z = z.p.p
+            elif z == z.p.left:
+                z = z.p
+                right_rotate(T, z)
+            z.p.color = Color.BLACK
+            z.p.p.color = Color.RED
+            left_rotate(T, z.p.p)
+    T.root.color = Color.BLACK
+
+
+def rb_insert(T: RBTree, z: RBNode):
+    # 12章のtree_insertと同じ
+    y = TreeNIL
+    x = T.root
+    while x != TreeNIL:
+        y = x
+        if z.key < x.key:
+            x = x.left
+        else:
+            x = x.right
+    z.p = y
+    if y == TreeNIL:
+        T.root = z
+    elif z.key < y.key:
+        y.left = z
+    else:
+        y.right = z
+    z.left = TreeNIL
+    z.right = TreeNIL
+    z.color = Color.RED
+    rb_insert_fixup(T, z)
+
+
 def rb_sample() -> RBNode:
     _2 = RBNode.apply(2)
     _3 = RBNode.apply(3)
@@ -132,7 +188,7 @@ def rb_sample() -> RBNode:
     _4.left = _3; _3.p = _4
     _4.right = _6; _6.p = _4
 
-    _12 = RBNode.apply(12,)
+    _12 = RBNode.apply(12)
     _17 = RBNode.apply(17)
     _14 = RBNode.apply(14)
 
@@ -170,19 +226,13 @@ def rb_sample() -> RBNode:
 if __name__ == "__main__":
     root = rb_sample()
     t = RBTree(root)
-    _11 = tree_search(root, 11)
-    _18 = tree_search(root, 18)
 
+    z = RBNode.apply(1)
 
-    print(_11.right)
+    rb_insert(t, z)
+    rb_insert(t, RBNode.apply(8))
 
-    left_rotate(t, _11)
-
-    print(_11.right)
-
-    right_rotate(t, _18)
-
-    print(_11.right)
+    in_order_tree_walk(root)
 
 
 
