@@ -26,12 +26,16 @@ class BayesianRegression(Regression):
         """
         mean_prev, precision_prev = self._get_prior(np.size(X, 1))
         w_precision = precision_prev + self.beta * X.T @ X
+
+        # w_mean = np.linalg.inv(w_precision) @ (precision_prev @ mean_prev + self.beta * X.T @ t)
         w_mean = np.linalg.solve(
             w_precision,
             precision_prev @ mean_prev + self.beta * X.T @ t
         )
+
         self.w_mean = w_mean
         self.w_precision = w_precision
+        # why not solve inv only at predict step?
         self.w_cov = np.linalg.inv(self.w_precision)
 
     def predict(self, X: np.ndarray):
