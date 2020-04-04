@@ -22,6 +22,7 @@ def linear_search(a, v):
     return None
 
 
+# p ~ q, q+1 ~ r
 def merge(A, p, q, r):
     n1 = q - p + 1
     n2 = r - q
@@ -80,11 +81,11 @@ def merge2(A, p, q, r):
                 return
 
 
-def marge_sort(A, p, r):
+def merge_sort(A, p, r):
     if p < r:
         q = floor((p + r) / 2)
-        marge_sort(A, p, q)
-        marge_sort(A, q + 1, r)
+        merge_sort(A, p, q)
+        merge_sort(A, q + 1, r)
         merge2(A, p, q, r)
 
 
