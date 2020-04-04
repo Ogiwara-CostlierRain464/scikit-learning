@@ -28,7 +28,7 @@ class BayesianRegression(Regression):
         w_precision = precision_prev + self.beta * X.T @ X
         w_mean = np.linalg.solve(
             w_precision,
-            precision_prev @ mean_prev + self.beta * X.T @ X
+            precision_prev @ mean_prev + self.beta * X.T @ t
         )
         self.w_mean = w_mean
         self.w_precision = w_precision
