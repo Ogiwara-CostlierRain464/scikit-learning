@@ -16,6 +16,31 @@ def randomized_quick_sort(A, p, r):
         randomized_quick_sort(A, q + 1, r)
 
 
+def quick_sort2(arr, p, r):
+    if p < r:
+        q = partition2(arr, p, r)
+        quick_sort2(arr, p, q - 1)
+        quick_sort2(arr, q + q, r)
+
+
+def partition2(arr, p, r):
+    x = arr[r]
+    i = p - 1
+    for j in range(p, r):
+        if arr[j] <= x:
+            i = i + 1
+            # swap
+            tmp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = tmp
+
+    # swap
+    tmp = arr[i+1]
+    arr[i+1] = arr[r]
+    arr[r] = tmp
+    return i + 1
+
+
 def partition(A, p, r):
     x = A[r]
     i = p - 1
@@ -35,6 +60,8 @@ def randomized_partition(A, p, r):
 
 
 if __name__ == "__main__":
-    arr = AlgorithmArray([2, 8, 7, 1, 3, 5, 6, 4])
-    quick_sort(arr, 1, 8)
-    print(arr)
+    num = [3, 5, 1, 2, 4]
+    quick_sort2(num, 0, 4)
+
+    for e in num[::-1]:  # traverse the iterable
+        print(e)

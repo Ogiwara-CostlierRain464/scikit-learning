@@ -61,15 +61,17 @@ class DiscreteVariable(RandomVariable):
             if func is not exclude:
                 func.receive_message(self.prior, self, prop_range)
 
-    def observe(self, data: int, prop_range=1):
+    def observe(self, data: int, prop_range=-1):
         """
         set observed data for this variable.
+        cf. P125
 
         :param data: observed data of this variable.
         :param prop_range: Range to propagate the observation effect to the other random variable using belief propagation alg.
         """
         assert (0 <= data < self.n_class)
         self.is_observed = True
+        # * I
         self.receive_message(np.eye(self.n_class)[data], self, prop_range=prop_range)
 
     def __str__(self):
@@ -116,6 +118,7 @@ class DiscreteProbability(ProbabilityFunction):
             self.message_from[random_variable] = np.ones(np.size(self.table, i))
 
         for random_variable in self.out:
+            # 追加される度、再計算
             self.send_message_to(random_variable, prop_range=0)
 
         self.name = name
@@ -135,10 +138,13 @@ class DiscreteProbability(ProbabilityFunction):
             self.send_message(prop_range, exclude=giver)
 
     @staticmethod
+    # message(μ_x→f)を確率のテーブルに会う形に整形
     def expand_dims(x, n_dim, axis):
         shape = [-1 if i == axis else 1 for i in range(n_dim)]
         return x.reshape(*shape)
 
+    # μ_f→x
+    # cf. (8.66)
     def compute_message_to(self, destination):
         probability = np.copy(self.table)
         for i, random_variable in enumerate(self.out):
@@ -180,6 +186,12 @@ class DiscreteProbability(ProbabilityFunction):
 def discrete(table, *condition, out=None, name=None):
     """
     discrete probability function
+    :param table: probability table. If a discrete variable A is conditioned with B and C, <br>
+     table[a][b][c] give probability of A=a when B=b and C=c.
+    :param condition: parent node
+    :param out: output of this discrete probability function
+    :param name: name of the discrete probability function
+    :return: output discrete random variable of discrete probability function
     """
     function = DiscreteProbability(table, *condition, out=out, name=name)
     if len(function.out) == 1:
