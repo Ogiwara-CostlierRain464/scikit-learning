@@ -1,4 +1,4 @@
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from algorithm_introduction.helper import *
 
 price_table = AlgorithmArray([1, 5, 8, 9, 10, 17, 17, 20, 24, 30])
@@ -79,13 +79,26 @@ def ext_memoized_cut_rod_aux(p, n, r, s):
     return q, s
 
 
-def matrix_chain_order(p):
+def matrix_chain_order(p: List[int]):
     n = len(p) - 1
-    m = AlgorithmArray([None]*n)
-    pass
+    m = AlgorithmArray.empty_n_m(n, n); s = AlgorithmArray.empty_n_m(n-1, n-1)
+    for i in count(1, n):
+        m[i][i] = 0
+    for l in count(2, n):
+        for i in count(1, n-l+1):
+            j = i+l-1
+            m[i][j] = INF
+            for k in count(i, j-1):
+                q = m[i][k] + m[k+1][j] + p[i-1]*p[k]*p[j]
+                if q < m[i][j]:
+                    m[i][j] = q
+                    s[i][j-1] = k
+    return m, s
 
 
 if __name__ == "__main__":
-    arr = AlgorithmArray.empty_n_m(3, 4)
-    arr[3][4] = 4
-    print(arr)
+    p_table = [5, 10, 3, 12, 5, 50, 6]
+    m, _ = matrix_chain_order(p_table)
+    print(m[1][6])
+    print(m)
+

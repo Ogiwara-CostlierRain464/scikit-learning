@@ -37,6 +37,7 @@ class AlgorithmArray(Generic[T]):
     def __repr__(self):
         return self.__str__()
 
+    # work as same as arr * 5
     def __mul__(self, other):
         assert isinstance(other, int)
         times = other
