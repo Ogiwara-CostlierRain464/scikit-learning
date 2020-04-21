@@ -37,9 +37,22 @@ class AlgorithmArray(Generic[T]):
     def __repr__(self):
         return self.__str__()
 
+    def __mul__(self, other):
+        assert isinstance(other, int)
+        times = other
+        arr = []
+        for _ in count(1, other):
+            copy = self.body.copy()
+            arr.append(AlgorithmArray(copy))
+        return AlgorithmArray(arr)
+
     @staticmethod
     def empty(size):
         return AlgorithmArray([None] * size)
+
+    @staticmethod
+    def empty_n_m(n, m):
+        return AlgorithmArray.empty(m) * n
 
 
 def count(begin, to):

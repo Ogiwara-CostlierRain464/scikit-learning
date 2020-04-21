@@ -34,6 +34,7 @@ def memoized_cut_rod_aux(p, n, r):
 def bottom_up_cut_rod(p, n):
     r = [None]*(n+1)
     r[0] = 0
+    # j is size of sub problem.
     for j in count(1, n):
         q = -INF
         for i in count(1, j):
@@ -78,5 +79,13 @@ def ext_memoized_cut_rod_aux(p, n, r, s):
     return q, s
 
 
+def matrix_chain_order(p):
+    n = len(p) - 1
+    m = AlgorithmArray([None]*n)
+    pass
+
+
 if __name__ == "__main__":
-    print(ext_memoized_cut_rod(price_table,10))
+    arr = AlgorithmArray.empty_n_m(3, 4)
+    arr[3][4] = 4
+    print(arr)
