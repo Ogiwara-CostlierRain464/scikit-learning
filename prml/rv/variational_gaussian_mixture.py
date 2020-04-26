@@ -27,7 +27,7 @@ class VariationalGaussianMixture:
 
     def fit(self, X: np.ndarray):
         self.init_params(X)
-        for _ in range(1000):  # NOTE: 対数尤度の変化 or パラメーターの変化に応じて停止するようにすべき
+        for _ in range(100):  # NOTE: 対数尤度の変化 or パラメーターの変化に応じて停止するようにすべき
             r = self.variational_expectation(X)
             self.variational_maximization(X, r)
 
