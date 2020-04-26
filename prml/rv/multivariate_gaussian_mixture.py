@@ -18,7 +18,7 @@ class MultivariateGaussianMixture:
         self.mu = kmeans.centers
         self.cov = np.array([cov for _ in range(self.n_components)])
         self.pi = np.ones(self.n_components) / self.n_components
-        for _ in range(3): # TODO 対数尤度の変化 or パラメーターの変化
+        for _ in range(1000):  # NOTE: 対数尤度の変化 or パラメーターの変化に応じて停止するようにすべき
             status = self.expectation(X)
             self.maximization(X, status)
 
