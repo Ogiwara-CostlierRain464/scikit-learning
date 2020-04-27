@@ -166,17 +166,10 @@ def insert_in_leaf(L: Node, K: Key, P: Pointer):
         # L.insert_after(i, P, K)
         for i in down_to(L.size - 1, index + 1):  # p_index+1以降を一個ずらす
             L.set_k(i + 1, L.k(i))
-        for i in down_to(L.size - 1, index + 1):  # p_index+1以降を一個ずらす
+        for i in down_to(L.size - 1, index + 1):
             L.set_p(i + 1, L.p(i))
         L.set_p(index + 1, P)
         L.set_k(index + 1, K)
-
-        #for i in count(index + 1, L.size - 1):  # p_index+1以降を一個ずらす
-        #    L.set_p(i + 1, L.p(i))
-        #    L.set_k(i + 1, L.k(i))
-        #L.set_p(index + 1, P)
-        #L.set_k(index + 1, K)
-
 
 def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
     if n == tree.root:
@@ -190,7 +183,6 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
         return
     P = n.parent
     if P.has_less_than_n_pointers:
-        #P.insert(N_, K_)
         index = P.highest_key_index_less_than_or_equal_to_arg(K_)
         for ki in down_to(P.size-1, index+1):
             P.set_k(ki+1, P.k(ki))
@@ -202,7 +194,6 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
     else:
         T = P.clone()
         T.add_size(1)
-        #T.insert(N_, K_)
 
         index = T.highest_key_index_less_than_or_equal_to_arg(K_)
         for ki in count(index + 1, T.size - 1):
@@ -241,5 +232,6 @@ if __name__ == "__main__":
     insert(11, "Monkey")
     insert(13, "Human")
     insert(20, "Ogiwara")
+
     print(tree.root.p(2).p(2))
 
