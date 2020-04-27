@@ -38,6 +38,7 @@ class Node(object):
         self.set_p(1, P)
         self.set_k(1, K)
 
+    # index is key index
     def insert_after(self, index: int, P: Pointer, K: Key):
         for i in count(index + 1, self.size - 1):  # p_index+1以降を一個ずらす
             self.set_p(i + 1, self.p(i))
@@ -97,7 +98,7 @@ class Node(object):
         for i in count(1, self.size):
             res += "(" + str(self.p(i)) + ")"
             res += " " + str(self.k(i)) + " "
-        res += "  next -> (" + str(self.next) + ")"
+        # res += "  parent -> (" + str(self.parent) + ")"
         return res
 
     def __repr__(self):
@@ -147,9 +148,14 @@ def search_leaf(node: Node, contain: Key):
     if node.is_leaf:
         return node
 
-    for i in count(1, node.size):
-        if contain < node.k(i):
+    if 0 < contain < node.k(1):
+        return search_leaf(node.p(1), contain)
+
+    for i in count(2, node.size):
+        if node.k(i-1) <= contain < node.k(i):
             return search_leaf(node.p(i), contain)
+
+    #if node.k(node.size) < contain:
 
     raise ValueError("Should not reach here")
 
@@ -165,14 +171,23 @@ def insert_in_leaf(L: Node, K: Key, P: Pointer):
 def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
     if n == tree.root:
         R = Node()
-        R.set_p(0, n)
-        R.set_k(0, K_)
-        R.set_p(1, N_)
+        R.set_p(1, n)
+        n.parent = R
+        R.set_k(1, K_)
+        R.set_p(2, N_)
+        N_.parent = R
         tree.root = R
         return
     P = n.parent
     if P.is_less_than_n_pointers:
-        P.insert(N_, K_)
+        #P.insert(N_, K_)
+        index = P.highest_key_index_less_than_or_equal_to_arg(K_)
+        for ki in count(index+1, P.size-1):
+            P.set_k(ki+1, P.k(ki))
+        for pi in count(index+2, P.size-1):
+            P.set_p(pi+1, P.p(pi))
+        P.set_k(index+1, K_)
+        P.set_p(index+2, N_)
         N_.parent = P
     else:
         T = P.clone()
@@ -182,10 +197,10 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
         P.erase_p_and_k()
         P_ = Node()
         for i in count(1, ceil((N+1)/2)):
-            P.set_p(i, T.p(i))
+            P.set_p(i, T.p(i))  # parent set?
         K__ = T.k(ceil((N + 1) / 2))
         for i in count(ceil((N + 1) / 2)+1, N):
-            P_.set_p(i, T.p(i))
+            P_.set_p(i, T.p(i))  # parent set?
         P_.next = T.next
         insert_in_parent(P, K__, P_)
 
@@ -193,7 +208,14 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
 if __name__ == "__main__":
     insert(2, "hi")
     insert(3, "pet")
-    insert(4, "pet")
-    insert(5, "pet")
-    print(tree.root)
+    insert(4, "dog")
+    insert(5, "cat")
+    insert(6, "hello")
+    insert(9, "jack")
+    #insert(7, "BAD")
+    print(tree.root.p(3))
+    #print(tree.root.p(3))
+
+    #print(tree.root.k(2))
+    #print(search_leaf(tree.root, 9))
 
