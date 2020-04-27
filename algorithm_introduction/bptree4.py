@@ -236,11 +236,5 @@ if __name__ == "__main__":
     insert(11, "GOD")
     insert(12, "GO00D")
     insert(13, "W")
-    #print(tree.root.k(1))
-    #print(tree.root.p(1).p(1).k(1))
     print(tree.root.p(2).p(1).k(2))
-    #print(tree.root.p(3))
-
-    #print(tree.root.k(2))
-    #print(search_leaf(tree.root, 9))
 
