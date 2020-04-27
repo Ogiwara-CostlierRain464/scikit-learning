@@ -79,3 +79,7 @@ def int_random(from_, to):
 
 
 INF = 99999
+
+if __name__ == "__main__":
+    for i in down_to(3,1):
+        print(i)

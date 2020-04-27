@@ -12,6 +12,10 @@ def count(from_: int, to: int):
     return range(from_, to+1)
 
 
+def down_to(from_: int, to: int):
+    return range(from_, to - 1, -1)
+
+
 class Node(object):
     def __init__(self, size=N-1):
         self.size = size
@@ -32,23 +36,12 @@ class Node(object):
         self.k_body[index - 1] = key
 
     def insert_before_p1(self, P: Pointer, K: Key):
-        for i in count(1, self.size - 1):  # p1以降を一個ずらす
-            self.set_p(i + 1, self.p(i))
+        for i in down_to(self.size - 1, 1):
             self.set_k(i + 1, self.k(i))
+        for i in down_to(self.size - 1, 1):
+            self.set_p(i + 1, self.p(i))
         self.set_p(1, P)
         self.set_k(1, K)
-
-    # index is key index
-    def insert_after(self, index: int, P: Pointer, K: Key):
-        for i in count(index + 1, self.size - 1):  # p_index+1以降を一個ずらす
-            self.set_p(i + 1, self.p(i))
-            self.set_k(i + 1, self.k(i))
-        self.set_p(index + 1, P)
-        self.set_k(index + 1, K)
-
-    def insert(self, P: Pointer, K: Key):
-        index = self.highest_key_index_less_than_or_equal_to_arg(K)
-        self.insert_after(index, P, K)
 
     # [Key]以下で最大、あるいはそれと等しいキーのindexを返す
     def highest_key_index_less_than_or_equal_to_arg(self, K: Key):
@@ -64,7 +57,6 @@ class Node(object):
 
     @property
     def has_less_than_n_pointers(self) -> bool:
-        #return self.p(self.size) is None
         return self.p(self.size+1) is None
 
     @property
@@ -76,8 +68,13 @@ class Node(object):
         return isinstance(self.p(1), Pointer)
 
     def erase_p_and_k(self):
-        self.p_body = [None] * self.size
+        self.p_body = [None] * (self.size+1)
         self.k_body = [INF] * self.size
+
+    def erase_partly(self):
+        tmp = self.p(N)
+        self.erase_p_and_k()
+        self.set_p(N, tmp)
 
     def clone(self):
         copy = Node()
@@ -132,7 +129,7 @@ def insert(K: Key, P: Pointer):
         insert_in_leaf(T, K, P)
         L_.set_p(N, L.p(N))
         L.set_p(N, L_)
-        L.erase_p_and_k()
+        L.erase_partly()
         for i in count(1, ceil(N / 2)):
             L.set_p(i, T.p(i))
             L.set_k(i, T.k(i))
@@ -151,9 +148,9 @@ def search_leaf(node: Node, contain: Key):
     if 0 < contain < node.k(1):
         return search_leaf(node.p(1), contain)
 
-    for i in count(2, node.size):
-        if node.k(i-1) <= contain < node.k(i):
-            return search_leaf(node.p(i), contain)
+    for i in count(1, node.size -1):
+        if node.k(i) <= contain < node.k(i+1):
+            return search_leaf(node.p(i+1), contain)
 
     if node.k(node.size) < contain:
         return search_leaf(node.p(node.size+1), contain)
@@ -167,11 +164,18 @@ def insert_in_leaf(L: Node, K: Key, P: Pointer):
     else:
         index = L.highest_key_index_less_than_or_equal_to_arg(K)
         # L.insert_after(i, P, K)
-        for i in count(index + 1, L.size - 1):  # p_index+1以降を一個ずらす
-            L.set_p(i + 1, L.p(i))
+        for i in down_to(L.size - 1, index + 1):  # p_index+1以降を一個ずらす
             L.set_k(i + 1, L.k(i))
+        for i in down_to(L.size - 1, index + 1):  # p_index+1以降を一個ずらす
+            L.set_p(i + 1, L.p(i))
         L.set_p(index + 1, P)
         L.set_k(index + 1, K)
+
+        #for i in count(index + 1, L.size - 1):  # p_index+1以降を一個ずらす
+        #    L.set_p(i + 1, L.p(i))
+        #    L.set_k(i + 1, L.k(i))
+        #L.set_p(index + 1, P)
+        #L.set_k(index + 1, K)
 
 
 def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
@@ -188,9 +192,9 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
     if P.has_less_than_n_pointers:
         #P.insert(N_, K_)
         index = P.highest_key_index_less_than_or_equal_to_arg(K_)
-        for ki in count(index+1, P.size-1):
+        for ki in down_to(P.size-1, index+1):
             P.set_k(ki+1, P.k(ki))
-        for pi in count(index+2, P.size-1):
+        for pi in down_to(P.size, index+2):
             P.set_p(pi+1, P.p(pi))
         P.set_k(index+1, K_)
         P.set_p(index+2, N_)
@@ -226,15 +230,16 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
 
 
 if __name__ == "__main__":
-    insert(2, "hi")
-    insert(3, "pet")
-    insert(4, "dog")
-    insert(5, "cat")
-    insert(6, "hello")
-    insert(9, "jack")
-    insert(10, "BAD")
-    insert(11, "GOD")
-    insert(12, "GO00D")
-    insert(13, "W")
-    print(tree.root.p(2).p(1).k(2))
+    insert(3, "Dog")
+    insert(2, "Cat")
+    insert(5, "Wolf")
+    insert(4, "God")
+    insert(6, "God")
+    insert(1, "God")
+    insert(10, "God")
+    insert(7, "Monkey")
+    insert(11, "Monkey")
+    insert(13, "Human")
+    insert(20, "Ogiwara")
+    print(tree.root.p(2).p(2))
 
