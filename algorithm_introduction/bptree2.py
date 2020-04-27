@@ -188,7 +188,7 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
         tree.root = R
         return
     P = n.parent
-    if P.is_less_than_n_pointers:
+    if P.has_less_than_n_pointers:
         P.insert(N_, K_)
         N_.parent = P  # link parent
     else:

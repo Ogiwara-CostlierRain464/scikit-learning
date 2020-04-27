@@ -15,9 +15,8 @@ def count(from_: int, to: int):
 class Node(object):
     def __init__(self, size=N-1):
         self.size = size
-        self.p_body = [None] * size
+        self.p_body = [None] * (size+1)
         self.k_body = [INF] * size
-        self.next = None
         self.parent = None
 
     def p(self, index: int):
@@ -66,7 +65,7 @@ class Node(object):
     @property
     def has_less_than_n_pointers(self) -> bool:
         #return self.p(self.size) is None
-        return self.next 
+        return self.p(self.size+1) is None
 
     @property
     def smallest_key(self):
@@ -84,7 +83,6 @@ class Node(object):
         copy = Node()
         copy.p_body = self.p_body.copy()
         copy.k_body = self.k_body.copy()
-        copy.next = self.next
         copy.parent = self.parent
         copy.size = self.size
         return copy
@@ -132,8 +130,8 @@ def insert(K: Key, P: Pointer):
         T = L.clone()
         T.add_size(1)
         insert_in_leaf(T, K, P)
-        L_.next = L.next
-        L.next = L_
+        L_.set_p(N, L.p(N))
+        L.set_p(N, L_)
         L.erase_p_and_k()
         for i in count(1, ceil(N / 2)):
             L.set_p(i, T.p(i))
@@ -157,7 +155,8 @@ def search_leaf(node: Node, contain: Key):
         if node.k(i-1) <= contain < node.k(i):
             return search_leaf(node.p(i), contain)
 
-    #if node.k(node.size) < contain:
+    if node.k(node.size) < contain:
+        return search_leaf(node.p(node.size+1), contain)
 
     raise ValueError("Should not reach here")
 
@@ -216,13 +215,13 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
         for i in count(1, ceil((N+1)/2)-1):
             P.set_p(i, T.p(i))
             P.set_k(i, T.k(i))
-        P.next = T.p(ceil((N+1)/2))
+        P.set_p(ceil((N+1)/2),T.p(ceil((N+1)/2)))
         K__ = T.k(ceil((N + 1) / 2))
+        offset = ceil((N + 1) / 2)
         for i in count(ceil((N + 1) / 2)+1, N):
-            offset = ceil((N + 1) / 2)
             P_.set_p(i - offset, T.p(i))
             P_.set_k(i - offset, T.k(i))
-        P_.next = T.next
+        P_.set_p(N+1 - offset, T.p(N+1))
         insert_in_parent(P, K__, P_)
 
 
@@ -235,7 +234,11 @@ if __name__ == "__main__":
     insert(9, "jack")
     insert(10, "BAD")
     insert(11, "GOD")
-    print(tree.root.k(2))
+    insert(12, "GO00D")
+    insert(13, "W")
+    #print(tree.root.k(1))
+    #print(tree.root.p(1).p(1).k(1))
+    print(tree.root.p(2).p(1).k(2))
     #print(tree.root.p(3))
 
     #print(tree.root.k(2))
