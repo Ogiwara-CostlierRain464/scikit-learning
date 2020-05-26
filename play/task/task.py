@@ -58,8 +58,56 @@ plt.show()
 
 # さて、このデータに対し機械学習をかけて見よう
 
-# X = data[[Label.Rain.value, Label.Wind.value]]
-# X = data[Label.Wind.value]
+X = data[[Label.Rain.value, Label.Wind.value]]
+y = data[Label.PM2_5.value]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=2
+)
+
+sc = StandardScaler()
+X_train_std = sc.fit_transform(X_train)
+X_test_std = sc.transform(X_test)
+
+# Random Forest, RVR, Lassoで機械学習
+model1 = RandomForestRegressor(bootstrap=True, criterion="mse")
+model2 = RVR(kernel="rbf")
+model3 = Lasso(alpha=0.1)
+
+model1.fit(X_train_std, y_train)
+model2.fit(X_train_std, y_train)
+model3.fit(X_train_std, y_train)
+
+y_train_pred = model1.predict(X_train_std)
+y_test_pred = model1.predict(X_test_std)
+
+print("Random Forest MSE train: {0}, test: {1}".format(
+    mean_squared_error(y_train, y_train_pred),
+    mean_squared_error(y_test, y_test_pred)
+))
+
+y_train_pred = model2.predict(X_train_std)
+y_test_pred = model2.predict(X_test_std)
+
+print("RVR MSE train: {0}, test: {1}".format(
+    mean_squared_error(y_train, y_train_pred),
+    mean_squared_error(y_test, y_test_pred)
+))
+
+y_train_pred = model3.predict(X_train_std)
+y_test_pred = model3.predict(X_test_std)
+
+print("Lasso MSE train: {0}, test: {1}".format(
+    mean_squared_error(y_train, y_train_pred),
+    mean_squared_error(y_test, y_test_pred)
+))
+
+# 相関係数を確認
+print(data.corr())
+
 data["SPM(mg/m3)"].fillna(0, inplace=True)
 X = data["SPM(mg/m3)"]
 y = data[Label.PM2_5.value]
@@ -71,63 +119,15 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=2
 )
 
-# sc = StandardScaler()
-# X_train_std = sc.fit_transform(X_train)
-# X_test_std = sc.transform(X_test)
-X_train_std = X_train
-X_test_std = X_test
-
 model = RandomForestRegressor(bootstrap=True, criterion="mse")
-# model = RVR(kernel="rbf")
-# model = Lasso(alpha=0.1)
-model.fit(np.array(X_train_std).reshape(595,1), y_train)
+model.fit(X_train[:, np.newaxis], y_train)
 
-y_train_pred = model.predict(X_train_std[:, None])
-y_test_pred = model.predict(X_test_std[:, None])
+y_train_pred = model.predict(X_train[:, np.newaxis])
+y_test_pred = model.predict(X_test[:, np.newaxis])
 
-print("RVR MSE train: {0}, test: {1}".format(
+print("Random forest MSE train: {0}, test: {1}".format(
     mean_squared_error(y_train, y_train_pred),
     mean_squared_error(y_test, y_test_pred)
 ))
-
-
-# X = data[[Label.Rain.value, Label.Wind.value]]
-# X = data[Label.Wind.value]
-data["SPM(mg/m3)"].fillna(0, inplace=True)
-X = data["SPM(mg/m3)"]
-y = data[Label.PM2_5.value]
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=2
-)
-
-# sc = StandardScaler()
-# X_train_std = sc.fit_transform(X_train)
-# X_test_std = sc.transform(X_test)
-X_train_std = X_train
-X_test_std = X_test
-
-model = RandomForestRegressor(bootstrap=True, criterion="mse")
-# model = RVR(kernel="rbf")
-# model = Lasso(alpha=0.1)
-model.fit(np.array(X_train_std).reshape(595,1), y_train)
-
-y_train_pred = model.predict(X_train_std[:, None])
-y_test_pred = model.predict(X_test_std[:, None])
-
-print("RVR MSE train: {0}, test: {1}".format(
-    mean_squared_error(y_train, y_train_pred),
-    mean_squared_error(y_test, y_test_pred)
-))
-
-# うまく捉えることができなかった
-# そもそも、相関係数を見れば自明…
-# ちゃんと見ればよかったね
-# X = data["SPM(mg/m3)"] でやってみよう！
-# MSEが8.709539448487378, test: 17.08460153216051 なのでぐっと改善した
-
 
 
