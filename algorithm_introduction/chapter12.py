@@ -29,6 +29,23 @@ def in_order_tree_walk(x: Node):
         in_order_tree_walk(x.right)
 
 
+def in_order_tree_walk_non_rec(T: Tree):
+    S = []
+    current = T.root
+    done = False
+    while not done:
+        if current is not None:
+            S.append(current)
+            current = current.left
+        else:
+            if len(S) != 0:
+                current = S.pop()
+                print(current.key)
+                current = current.right
+            else:
+                done = True
+
+
 def tree_search(x: Node, k) -> Optional[Node]:
     if (x is None) or (k == x.key):
         return x
@@ -150,11 +167,6 @@ if __name__ == "__main__":
     root = sample()
 
     t = Tree(root)
-    # in_order_tree_walk(t.root)
-    tree_insert_rec(root, Node(19))
-    in_order_tree_walk(t.root)
-    _19 = tree_search(root, 19)
-    print(_19.p)
-    print(_19.left)
-    print(_19.right)
+    in_order_tree_walk_non_rec(t)
+
 

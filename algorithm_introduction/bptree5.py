@@ -1,5 +1,5 @@
 from math import ceil
-from typing import Union
+from typing import Union, Optional
 from sys import exit
 
 # 忘れないうちに、何が難しかったかめもしておくよ
@@ -21,7 +21,7 @@ INF = 9999
 
 
 def count(from_: int, to: int):
-    return range(from_, to+1)
+    return range(from_, to + 1)
 
 
 def down_to(from_: int, to: int):
@@ -29,26 +29,30 @@ def down_to(from_: int, to: int):
 
 
 class Node(object):
-    def __init__(self, size=N-1):
+    def __init__(self, size=N):
         self.size = size
-        self.p_body = [None] * (size+1)
-        self.k_body = [INF] * size
+        # P1, K1, P2, ... P_n-1, K_n-1, P_n
+        self.p_body = [None] * size
+        self.k_body = [INF] * (size - 1)
         self.parent = None
 
-    def p(self, index: int):
+    def p(self, index: int) -> Optional:
         return self.p_body[index - 1]
 
     def set_p(self, index: int, pointer):
         self.p_body[index - 1] = pointer
 
     def k(self, index: int) -> Key:
+        assert index != self.size
         return self.k_body[index - 1]
 
     def set_k(self, index: int, key: Key):
+        assert index != self.size
         self.k_body[index - 1] = key
 
     def insert_before_p1(self, P: Pointer, K: Key):
-        for i in down_to(self.size - 1, 1):
+        # P,KをP1の前に入れるために、
+        for i in down_to(self.size - 2, 1):
             self.set_k(i + 1, self.k(i))
         for i in down_to(self.size - 1, 1):
             self.set_p(i + 1, self.p(i))
@@ -58,18 +62,18 @@ class Node(object):
     # [Key]以下で最大、あるいはそれと等しいキーのindexを返す
     def highest_key_index_less_than_or_equal_to_arg(self, K: Key):
         prev = 1
-        for i in count(1, self.size):
+        for i in count(1, self.size-1):
             if K >= self.k(i) > prev:
                 prev = i
         return prev
 
     @property
-    def is_not_full(self):
-        return self.k(self.size) == INF
+    def has_less_than_n_minus_1_key_values(self):
+        return self.k(self.size-1) == INF
 
     @property
     def has_less_than_n_pointers(self) -> bool:
-        return self.p(self.size+1) is None
+        return self.p(self.size) is None
 
     @property
     def smallest_key(self):
@@ -80,12 +84,24 @@ class Node(object):
         return isinstance(self.p(1), Pointer)
 
     def erase_p_and_k(self):
-        self.p_body = [None] * (self.size+1)
-        self.k_body = [INF] * self.size
+        self.p_body = [None] * self.size
+        self.k_body = [INF] * (self.size-1)
+
+    def erase_all_entries(self):
+        self.p_body = [None] * self.size
+        self.k_body = [INF] * (self.size-1)
 
     def erase_partly(self):
         tmp = self.p(N)
+        # Remove all, and restore
         self.erase_p_and_k()
+        self.set_p(N, tmp)
+
+    def erase_p1_through_k_n_minus_1(self):
+        tmp = self.p(N)
+        # Remove all, and restore
+        self.p_body = [None] * self.size
+        self.k_body = [INF] * (self.size - 1)
         self.set_p(N, tmp)
 
     def clone(self):
@@ -94,6 +110,23 @@ class Node(object):
         copy.k_body = self.k_body.copy()
         copy.parent = self.parent
         copy.size = self.size
+        return copy
+
+    def copy_p1_to_k_n_minus_1_to_T_than_can_hold_n_pairs(self):
+        copy = Node()
+        copy.p_body = self.p_body.copy()
+        copy.k_body = self.k_body.copy()
+
+        copy.add_size(1)
+        return copy
+
+    def copy_to_a_block_of_memory_T_that_hold_P_and_K_dash_and_N_dash(self):
+        copy = Node()
+        copy.p_body = self.p_body.copy()
+        copy.k_body = self.k_body.copy()
+        copy.parent = self.parent
+        copy.size = self.size
+        copy.add_size(1)
         return copy
 
     def add_size(self, additional_size):
@@ -132,16 +165,15 @@ def insert(K: Key, P: Pointer):
         tree.root = L
     else:
         L = search_leaf(tree.root, K)
-    if L.is_not_full:
+    if L.has_less_than_n_minus_1_key_values:
         insert_in_leaf(L, K, P)
     else:
         L_ = Node()
-        T = L.clone()
-        T.add_size(1)
+        T = L.copy_p1_to_k_n_minus_1_to_T_than_can_hold_n_pairs()
         insert_in_leaf(T, K, P)
         L_.set_p(N, L.p(N))
         L.set_p(N, L_)
-        L.erase_partly()
+        L.erase_p1_through_k_n_minus_1()
         for i in count(1, ceil(N / 2)):
             L.set_p(i, T.p(i))
             L.set_k(i, T.k(i))
@@ -160,12 +192,12 @@ def search_leaf(node: Node, contain: Key):
     if 0 < contain < node.k(1):
         return search_leaf(node.p(1), contain)
 
-    for i in count(1, node.size -1):
-        if node.k(i) <= contain < node.k(i+1):
-            return search_leaf(node.p(i+1), contain)
+    for i in count(1, node.size - 2):
+        if node.k(i) <= contain < node.k(i + 1):
+            return search_leaf(node.p(i), contain)
 
-    if node.k(node.size) < contain:
-        return search_leaf(node.p(node.size+1), contain)
+    if node.k(node.size-1) <= contain:
+        return search_leaf(node.p(node.size), contain)
 
     raise ValueError("Should not reach here")
 
@@ -175,13 +207,15 @@ def insert_in_leaf(L: Node, K: Key, P: Pointer):
         L.insert_before_p1(P, K)
     else:
         index = L.highest_key_index_less_than_or_equal_to_arg(K)
+        Ki = L.k(index)
         # L.insert_after(i, P, K)
-        for i in down_to(L.size - 1, index + 1):  # p_index+1以降を一個ずらす
+        for i in down_to(L.size - 2, index + 1):  # p_index+1以降を一個ずらす
             L.set_k(i + 1, L.k(i))
-        for i in down_to(L.size - 1, index + 1):
+        for i in down_to(L.size - 2, index + 1):
             L.set_p(i + 1, L.p(i))
         L.set_p(index + 1, P)
         L.set_k(index + 1, K)
+
 
 def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
     if n == tree.root:
@@ -195,40 +229,49 @@ def insert_in_parent(n: Node, K_: Key, N_: Union[Node, Pointer]):
         return
     P = n.parent
     if P.has_less_than_n_pointers:
-        index = P.highest_key_index_less_than_or_equal_to_arg(K_)
-        for ki in down_to(P.size-1, index+1):
-            P.set_k(ki+1, P.k(ki))
-        for pi in down_to(P.size, index+2):
-            P.set_p(pi+1, P.p(pi))
-        P.set_k(index+1, K_)
-        P.set_p(index+2, N_)
+        N_index = 1
+        for i in count(1, P.size-1):
+            if P.p(i) == n:
+                N_index = i
+                break
+
+        for ki in down_to(P.size - 2, N_index + 1):
+            P.set_k(ki + 1, P.k(ki))
+        for pi in down_to(P.size - 2, N_index + 1):
+            P.set_p(pi + 1, P.p(pi))
+        P.set_k(N_index + 1, K_)
+        P.set_p(N_index + 1, N_)
         N_.parent = P
     else:
-        T = P.clone()
-        T.add_size(1)
+        T = P.copy_to_a_block_of_memory_T_that_hold_P_and_K_dash_and_N_dash()
 
-        index = T.highest_key_index_less_than_or_equal_to_arg(K_)
-        for ki in count(index + 1, T.size - 1):
+        N_index = 1
+        for i in count(1, T.size - 1):
+            if T.p(i) == n:
+                N_index = i
+                break
+
+        for ki in down_to(T.size - 2, N_index + 1):
             T.set_k(ki + 1, T.k(ki))
-        for pi in count(index + 2, T.size - 1):
+        for pi in down_to(T.size - 2, N_index + 1):
             T.set_p(pi + 1, T.p(pi))
-        T.set_k(index + 1, K_)
-        T.set_p(index + 2, N_)
 
+        T.set_k(N_index + 1, K_)
+        T.set_p(N_index + 1, N_)
 
         N_.parent = T  # link parent
-        P.erase_p_and_k()
+        P.erase_all_entries()
         P_ = Node()
-        for i in count(1, ceil((N+1)/2)-1):
+        for i in count(1, ceil((N + 1) / 2) - 1):
             P.set_p(i, T.p(i))
             P.set_k(i, T.k(i))
-        P.set_p(ceil((N+1)/2),T.p(ceil((N+1)/2)))
+        P.set_p(ceil((N + 1) / 2), T.p(ceil((N + 1) / 2)))
         K__ = T.k(ceil((N + 1) / 2))
         offset = ceil((N + 1) / 2)
-        for i in count(ceil((N + 1) / 2)+1, N):
+        for i in count(ceil((N + 1) / 2) + 1, N):
             P_.set_p(i - offset, T.p(i))
             P_.set_k(i - offset, T.k(i))
-        P_.set_p(N+1 - offset, T.p(N+1))
+        P_.set_p(N + 1 - offset, T.p(N + 1))
         insert_in_parent(P, K__, P_)
 
 
@@ -247,4 +290,3 @@ if __name__ == "__main__":
     insert(20, "Ogiwara")
 
     print(tree.root.p(2).p(2))
-

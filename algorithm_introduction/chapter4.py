@@ -133,6 +133,29 @@ B = np.array(
 # print(A.dot(B))
 # print(strassen(A, B))
 
-print(find_maximum_subarray(arr, 1, arr.length))
+# print(find_maximum_subarray(arr, 1, arr.length))
 # print(full_search(arr))
 # print(linear_search(arr))
+
+
+def linear_search(A):
+    m = -INF
+    low_m = high_m = None
+    m_r = 0
+    low_r = 1
+    for i in count(1, A.length):
+        m_r += A[i]
+        if m_r > m:
+            low_m = low_r
+            high_m = i
+            m = m_r
+        if m_r < 0:
+            m_r = 0
+            low_r = i + 1
+
+    return low_m, high_m, m
+
+
+if __name__ == "__main__":
+    arr = AlgorithmArray([-1, -2, -3, -4, -5, -6])
+    print(linear_search(arr))

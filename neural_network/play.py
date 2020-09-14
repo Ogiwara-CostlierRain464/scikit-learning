@@ -9,7 +9,7 @@ from neural_network.mnist import load_mnist
 
 train_loss_list = []
 
-iter_num = 10000
+iter_num = 100
 train_size = X_train.shape[0]
 batch_size = 100
 learning_rate = 0.1

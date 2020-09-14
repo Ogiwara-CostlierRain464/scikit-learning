@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
 from prml.rv.variational_gaussian_mixture import VariationalGaussianMixture
+
 
 x1 = np.random.normal(size=(100, 2))
 x1 += np.array([-5, -5])
